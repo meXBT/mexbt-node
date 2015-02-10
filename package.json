@@ -1,0 +1,36 @@
+{
+  "name": "mexbt",
+  "version": "0.0.1",
+  "description": "Node.js client for meXBT latam crypto exchange",
+  "main": "lib/mexbt.js",
+  "scripts": {
+    "build": "coffee --bare --compile *.coffee",
+    "prepublish": "coffee --output lib --compile src",
+    "test": "mocha --compilers coffee:coffee-script/register"
+  },
+  "keywords": [
+    "mexbt",
+    "litecoin",
+    "bitcoin",
+    "cryptocurrency",
+    "exchange"
+  ],
+  "author": {
+    "name": "William Coates",
+    "email": "william@mexbt.com"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/meXBT/mexbt-node.git"
+  },
+  "dependencies": {
+    "crypto": "0.0.3",
+    "request": "^2.53.0"
+  },
+  "devDependencies": {
+    "mocha": "^2.1.0",
+    "coffee-script": "^1.9.0",
+    "expect.js": "^0.3.1"
+  }
+}
