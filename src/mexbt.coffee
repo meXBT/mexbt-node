@@ -67,7 +67,7 @@ class Mexbt extends EventEmitter
     @_private('withdraw', params, callback)
 
   createOrder: (params, callback) ->
-    params = @_mergeDefaultsAndRewrite(params, {pair: 'btcmxn', side: 'buy', orderType: 'market'}, {pair: 'ins', amount: 'qty', price: 'px'})
+    params = @_mergeDefaultsAndRewrite(params, {pair: 'btcmxn', side: 'buy', type: 'market'}, {pair: 'ins', amount: 'qty', price: 'px', type: 'orderType'})
     if params.orderType is 'market'
       params.orderType = 1
     else

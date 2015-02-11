@@ -23,7 +23,8 @@ api.ticker({pair: 'btcusd'}, (err, res) ->
   console.log(res)
 )
 api.trades({startIndex: 0, count: 1}, (err, res) ->
-  console.log(res)
+  trade = res.trades[0]
+  console.log("Last trade: #{trade.qty} BTC @ #{trade.px} MXN")
 )
 api.tradesByDate({startDate: 0, endDate: 12345678}, (err, res) ->
   console.log(res)
@@ -97,4 +98,4 @@ api.on('order-removed', (o) ->
 )
 ```
 
-Unfortunately the order book is pretty "chatty", there are constantly orders being adjusted so keep that in mind, as they will be removed and then added again. 
+Unfortunately the order book is pretty "chatty", there are constantly orders being adjusted so keep that in mind, as they will be removed and then added again.
