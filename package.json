@@ -26,7 +26,8 @@
   },
   "dependencies": {
     "crypto": "0.0.3",
-    "request": "^2.53.0"
+    "request": "^2.53.0",
+    "ws": "^0.7.1"
   },
   "devDependencies": {
     "mocha": "^2.1.0",

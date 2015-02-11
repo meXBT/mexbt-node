@@ -72,3 +72,29 @@ api.cancelOrder({id: 12345}, (err, res) ->
 api.cancelAllOrders (err, res) ->
   console.log(res)
 ```
+
+### Listening to trade, order and order-removed events
+
+If you want to listen to events and react to them, it's pretty simple. Just tell the api what currency pair you want to listen
+for and setup your listeners. If you want to listen to multiple currency pairs just use multiple Mexbt instances.
+
+```coffeescript
+Mexbt = require 'mexbt'
+
+api = new Mexbt
+api.subscribeToStream('btcmxn') # btcmxn is also the default pair
+
+api.on("trade", (t) ->
+  console.log("#{t.quantity} BTC #{t.side} @ #{t.price} MXN")
+)
+
+api.on('order', (o) ->
+  console.log("#{o.side.toUpperCase()} order added for #{o.quantity} BTC @ #{o.price} MXN")
+)
+
+api.on('order-removed', (o) ->
+  console.log("#{o.side.toUpperCase()} order #{o.id} removed")
+)
+```
+
+Unfortunately the order book is pretty "chatty", there are constantly orders being adjusted so keep that in mind, as they will be removed and then added again. 

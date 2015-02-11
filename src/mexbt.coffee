@@ -1,12 +1,23 @@
 request = require 'request'
 crypto = require 'crypto'
+RobustWebSocket = require './robust_web_socket'
+{EventEmitter} = require 'events'
 
-class Mexbt
+class Mexbt extends EventEmitter
   publicEndpoint: "https://public-api.mexbt.com"
   privateEndpoint: null
 
   constructor: (@key, @secret, @userId, options={}) ->
     @privateEndpoint = "https://private-api#{if options?.sandbox? then '-sandbox' else ''}.mexbt.com"
+
+  subscribeToStream: (pair='btcmxn') ->
+    @socket = new RobustWebSocket('wss://api.mexbt.com:8401/v1/GetL2AndTrades/', (socket) =>
+      socket.send(JSON.stringify({ins: pair}))
+    , (data) =>
+      json = JSON.parse(data)
+      for tradeOrOrder in json
+        @parseStreamApiMessage(tradeOrOrder)
+    )
 
   # Public API functions
 
@@ -85,6 +96,22 @@ class Mexbt
     @_private('orders/cancel-all', params, callback)
 
   # Helper functions
+
+  parseStreamApiMessage: (tradeOrOrder) ->
+    [id, tick, price, quantity, action, side] = tradeOrOrder
+    date = tick2UnixTimestamp(tick)
+    sideString = if side is 0 then 'buy' else 'sell'
+    obj = {id: id, date: date, price: price, quantity: quantity, side: sideString}
+    if action is 0
+      if quantity is 0
+        @emit('order-removed', obj)
+      else
+        @emit('order', obj)
+    else
+      @emit('trade', obj)
+
+  tick2UnixTimestamp = (tick) ->
+    parseInt((tick - 621355968000000000) / 10000000)
 
   _private: (path, params, callback) ->
     nonce = (new Date()).getTime()
