@@ -56,6 +56,15 @@ class Mexbt extends EventEmitter
     params = @_mergeDefaultsAndRewrite(params, {pair: 'btcmxn', startIndex: -1, count: 20}, {pair: 'ins'})
     @_private('trades', params, callback)
 
+  accountTradingFee: (args...) ->
+    [params, callback] = @_parseArgs(args)
+    params = @_mergeDefaultsAndRewrite(params, {pair: 'btcmxn', type: 'market', side: 'buy', price: null}, {amount: 'qty', price: 'px', pair: 'ins', type: 'orderType'})
+    if params.orderType is 'market'
+      params.orderType = 1
+    else
+      params.orderType = 0
+    @_private('trading-fee', params, callback)
+
   accountOrders: (callback) ->
     @_private('orders', {}, callback)
 
@@ -74,7 +83,6 @@ class Mexbt extends EventEmitter
       params.orderType = 0
     @_private('orders/create', params, callback)
 
-  # FIXME: action: 'execute_now' doesn't seem to work
   modifyOrder: (params, callback) ->
     params = @_mergeDefaultsAndRewrite(params, {pair: 'btcmxn'}, {id: 'serverOrderId', pair: 'ins', action: 'modifyAction'})
     switch params.modifyAction
@@ -140,7 +148,7 @@ class Mexbt extends EventEmitter
         callback(null, body)
     )
 
-  _mergeDefaultsAndRewrite: (params, defaults, rewriteInfo) ->
+  _mergeDefaultsAndRewrite: (params, defaults, rewriteInfo={}) ->
     for key, value of defaults
       unless params[key]
         params[key] = value

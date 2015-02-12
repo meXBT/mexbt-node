@@ -1,6 +1,6 @@
 {
   "name": "mexbt",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Node.js client for meXBT latam crypto exchange",
   "main": "lib/mexbt.js",
   "scripts": {
